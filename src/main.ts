@@ -42,15 +42,16 @@ export const connectDB = async () => {
   }
 };
 
-try {
-  connectDB();
-  app.listen(port, async () => {
-    console.log(`Connected Port: ${port}`);
+connectDB()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Connected Port: ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
   });
-} catch (error) {
-  console.error(error);
-  process.exit(1);
-}
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({
