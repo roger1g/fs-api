@@ -23,12 +23,11 @@ export const sendMailWithOptions = (
 		subject: subject,
 		text: body,
 	};
-	// console.log(transporter)
-	console.log(process.env.TEST_EMAIL_USER);
-	console.log(process.env.TEST_EMAIL_APP_PASSWORD);
+	console.log(transporter)
 	return new Promise((resolve, rejects) => {
 		console.log(`inside the promise logic`)
 		transporter.sendMail(mailOptions, (error, info) => {
+			console.log(`Inside transporter's send mail method`)
 			if (error) {
 				console.error(
 					`Exception happened inside the node mailer module, sendMailWithOptions function`
