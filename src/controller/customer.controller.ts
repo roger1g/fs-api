@@ -28,7 +28,7 @@ const customerProfileCreation = async (req: Request, res: Response) => {
 
     try {
       // 3. sending email result
-      __sendEmailToSales(rawData);
+      await __sendEmailToSales(rawData);
       emailSentResult = true;
     } catch (error) {
       console.error(
