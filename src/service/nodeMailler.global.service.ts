@@ -25,6 +25,7 @@ export const sendMailWithOptions = (
 	console.log(process.env.TEST_EMAIL_USER);
 	console.log(process.env.TEST_EMAIL_APP_PASSWORD);
 	return new Promise((resolve, rejects) => {
+		console.log(`inside the promise logic`)
 		transporter.sendMail(mailOptions, (error, info) => {
 			if (error) {
 				console.error(
