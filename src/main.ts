@@ -30,15 +30,20 @@ app.use("/customers", customerRoute);
 
 const connection = async () => {
   try {
-    if (process.env.MONGO_CONNECTION_STRING) {
-      await mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
-        ignoreUndefined: true,
-      });
-      console.log("MongoDB Connected...");
-      app.listen(port, async () => {
-        console.log(`Connected: ${port}`);
-      });
+    if (!process.env.MONGO_CONNECTION_STRING) {
+      throw new Error(
+        "MONGO_CONNECTION_STRING environment variable is not defined."
+      );
     }
+
+    await mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
+      ignoreUndefined: true,
+    });
+    console.log("MongoDB Connected...");
+
+    app.listen(port, async () => {
+      console.log(`Connected: ${port}`);
+    });
   } catch (error) {
     console.error(error);
     process.exit(1);
