@@ -2,9 +2,10 @@ import express, { Request, Response } from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
 import { customerRoute } from "./route/customerRoute";
-import { connectDB } from "./config/db.js";
+import mongoose from "mongoose";
 
 dotenv.config();
+mongoose.set("strictQuery", true);
 
 var corsOptions = {
   origin: "*",
@@ -27,14 +28,28 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/customers", customerRoute);
 
-connectDB();
+export const connectDB = async () => {
+  try {
+    if (process.env.MONGO_CONNECTION_STRING) {
+      await mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
+        ignoreUndefined: true,
+      });
+      console.log("MongoDB Connected...");
+    }
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
 
 try {
+  connectDB();
   app.listen(port, async () => {
     console.log(`Connected Port: ${port}`);
   });
 } catch (error) {
   console.error(error);
+  process.exit(1);
 }
 
 app.use((req: Request, res: Response) => {
