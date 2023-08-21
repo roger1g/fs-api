@@ -35,10 +35,10 @@ const connection = async () => {
         ignoreUndefined: true,
       });
       console.log("MongoDB Connected...");
+      app.listen(port, async () => {
+        console.log(`Connected: ${port}`);
+      });
     }
-    app.listen(port, async () => {
-      console.log(`Connected: ${port}`);
-    });
   } catch (error) {
     console.error(error);
     process.exit(1);
