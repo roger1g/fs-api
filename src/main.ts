@@ -1,7 +1,21 @@
 import express, { Request, Response } from "express";
+import * as dotenv from "dotenv";
+import cors from "cors";
+import { customerRoute } from "./route/customerRoute";
+import { connectDB } from "./config/db.js";
+
+dotenv.config();
+
+var corsOptions = {
+  origin: "*",
+};
 
 const app = express();
-// const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3500;
+
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req: Request, res: Response) => {
   res.send(
@@ -11,9 +25,13 @@ app.get("/", (req: Request, res: Response) => {
   );
 });
 
+app.use("/customers", customerRoute);
+
+connectDB();
+
 try {
-  app.listen(3000, async () => {
-    console.log(`Connected Port: ${3000}`);
+  app.listen(port, async () => {
+    console.log(`Connected Port: ${port}`);
   });
 } catch (error) {
   console.error(error);
