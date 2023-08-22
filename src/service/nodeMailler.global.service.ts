@@ -5,7 +5,7 @@ dotenv.config();
 
 const transporter = nodeMailer.createTransport({
 	service: "gmail",
-	port:587,
+	port:465,
 	secure:true,
 	auth: {
 		user: process.env.TEST_EMAIL_USER,
@@ -23,9 +23,9 @@ export const sendMailWithOptions = (
 		subject: subject,
 		text: body,
 	};
-	console.log(transporter)
+	console.log(transporter);
 	return new Promise((resolve, rejects) => {
-		console.log(`inside the promise logic`)
+		console.log(`inside the promise logic`);
 		transporter.sendMail(mailOptions, (error, info) => {
 			console.log(`Inside transporter's send mail method`)
 			if (error) {
