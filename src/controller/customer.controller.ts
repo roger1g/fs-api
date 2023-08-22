@@ -3,7 +3,8 @@ import { getOneMonthRange, getDateStringByDuration } from "../util/misc";
 import { I_Customer } from "../models/customers.model";
 import { customerModel } from "../models/customers.model";
 import { sendMailWithOptions } from "../service/nodeMailler.global.service";
-import fetch from "node-fetch";
+import axios from 'axios';
+
 const customerProfileCreation = async (req: Request, res: Response) => {
 	// step 0 , midware already validate the information from the customer
 	// If it is not matching, req already got bounced with status code 400.
@@ -70,14 +71,14 @@ const __cleanRawData = (rawData: I_Customer) => {
 };
 
 const __sendEmailToSales = async (rawData: I_Customer) => {
-	const response = await fetch("http://ec2-18-116-230-34.us-east-2.compute.amazonaws.com/customers/submittingCustomerProfile",{
-		method:"POST",
-		body:rawData
-	})
-	console.log(response)
-	const result = await response.json()
-	console.log(result)
-	return result;
+	try {
+        const response = await axios.post("http://ec2-18-116-230-34.us-east-2.compute.amazonaws.com/customers/submittingCustomerProfile", rawData);
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
 };
 
 export default {
