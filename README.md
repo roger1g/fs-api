@@ -28,3 +28,7 @@
 - before upload file, need ```tsc``` to build and move dist folder too.
 - Check env
 - ![image](https://github.com/roger1g/fs-api/assets/59503331/aea99a21-5db5-468b-97f1-e9f9bbbee336)
+
+# Forever Start
+- in the server folder
+- ```forever start -c "npm start" ./```
