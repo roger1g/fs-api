@@ -1,9 +1,10 @@
 import { Request, Response, raw } from "express";
 import { getOneMonthRange, getDateStringByDuration } from "../util/misc";
 import { I_Customer } from "../models/customers.model";
+import { I_ContactMessage } from "../interface/ContactMessage.interface";
 import { customerModel } from "../models/customers.model";
 import { sendMailWithOptions } from "../service/nodeMailler.global.service";
-import axios from 'axios';
+import axios from "axios";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -13,7 +14,7 @@ const customerProfileCreation = async (req: Request, res: Response) => {
 	const { body: rawData } = req;
 	try {
 		let resultObject;
-		// This work inside the HTTPS server is moved to our HTTP server	
+		// This work inside the HTTPS server is moved to our HTTP server
 		// HTTPS server is like a wrapper around the HTTP server because the front end could not directly make request to the HTTP server.
 		// 1. clean the data and make the fields consistent
 		// const cleanedData = __cleanRawData(rawData);
@@ -30,8 +31,8 @@ const customerProfileCreation = async (req: Request, res: Response) => {
 		// 	console.error(error);
 		// }
 		try {
-		// Forward the request from the Cyclic server to the HTTP server.
-		// Literally making cyclic server as a HTTP adaptor.  
+			// Forward the request from the Cyclic server to the HTTP server.
+			// Literally making cyclic server as a HTTP adaptor.
 			const httpResponse = await __sendEmailToSales(rawData);
 			resultObject = httpResponse;
 		} catch (error) {
@@ -41,7 +42,7 @@ const customerProfileCreation = async (req: Request, res: Response) => {
 			console.error(rawData);
 			console.error(`Exception detail is below.`);
 			console.error(error);
-			resultObject = error
+			resultObject = error;
 		}
 		res.status(201).json(resultObject);
 	} catch (error) {
@@ -49,6 +50,20 @@ const customerProfileCreation = async (req: Request, res: Response) => {
 			dbResult: false,
 			emailResult: false,
 		});
+	}
+};
+
+const customerContactMessage = async (req: Request, res: Response) => {
+	try {
+		const data = req.body;
+		await __sendContactMessage(data);
+		res.status(200).send(true);
+	} catch (error) {
+		console.error(
+			`Exception triggered inside the customerSentContactMessage() Controller`
+		);
+		console.error(error);
+		res.status(400).send(false);
 	}
 };
 
@@ -71,15 +86,33 @@ const __cleanRawData = (rawData: I_Customer) => {
 
 const __sendEmailToSales = async (rawData: I_Customer) => {
 	try {
-        const response = await axios.post(`${process.env['AWS_SERVER_URL']}`, rawData);
-        // console.log(response);
-        return response.data;
-    } catch (error) {
-        console.error("Error:", error);
-        throw error;
-    }
+		const response = await axios.post(
+			`${process.env["AWS_SERVER_URL"] + "submittingCustomerProfile"}`,
+			rawData
+		);
+		// console.log(response);
+		return response.data;
+	} catch (error) {
+		console.error("Error:", error);
+		throw error;
+	}
+};
+
+const __sendContactMessage = async (rawData: I_ContactMessage) => {
+	try {
+		const response = await axios.post(
+			`${process.env["AWS_SERVER_URL"] + "customerContactMessage"}`,
+			rawData
+		);
+		// console.log(response);
+		return response.data;
+	} catch (error) {
+		console.error("Error:", error);
+		throw error;
+	}
 };
 
 export default {
 	customerProfileCreation,
+	customerContactMessage
 };

@@ -17,4 +17,10 @@ route.post(
 	customerController.customerProfileCreation
 );
 
+route.post(
+	"/customerContactMessage",
+	customerController.customerContactMessage
+)
+
+
 export { route as customerRoute };
