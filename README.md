@@ -11,4 +11,14 @@
 
 
 
+# Flow
+##### Client send data to Cyclic server 
+ - in Main branch
 
+##### Main branch Cyclic server send data to AWS server
+ - use axios rest to call aws api
+ - AWS-Main branch
+
+##### After works, AWS server return data to Cyclic server
+
+##### Cyclic server return data (from AWS server) to Client
