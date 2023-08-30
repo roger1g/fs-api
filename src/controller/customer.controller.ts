@@ -3,6 +3,20 @@ import { getOneMonthRange, getDateStringByDuration } from "../util/misc";
 import { I_Customer } from "../models/customers.model";
 import { customerModel } from "../models/customers.model";
 import { sendMailWithOptions } from "../service/nodeMailler.global.service";
+import {I_ContactMessage} from "../interface/contactMessage.interface"
+
+const customerContactMessage= async(req:Request, res:Response) =>{
+	try{
+		const data = req.body;
+		await __sendContactMessage(data);
+		res.status(200).send(true)
+	}
+	catch(error){
+		console.error(`Exception triggered inside the customerSentContactMessage() Controller`)
+		console.error(error)
+		res.status(400).send(false)
+	}
+}
 
 const customerProfileCreation = async (req: Request, res: Response) => {
 	// step 0 , midware already validate the information from the customer
@@ -69,13 +83,43 @@ const __cleanRawData = (rawData: I_Customer) => {
 	return result;
 };
 
-const __sendEmailToSales = async (rawData: I_Customer): Promise<boolean> => {
+const __sendEmailToSales = async (rawData: I_Customer ): Promise<boolean> => {
 	let result = false;
 	try {
 		let body = "";
 		for (const property in rawData) {
 			body += `${property}: ${rawData[property as keyof I_Customer]}\n`;
 		}
+		// LOOK HERE FUTURE CODERS, THIS IS WHERE YOU CONFIGURE THE DESTINATION EMAIL
+		sendMailWithOptions(rawData.email, "New Customer Application", body)
+		.then((data) => {
+				result = true;
+			})
+    		.catch((err) => {
+ 			        console.log(err)
+				result = false;
+			});
+	} catch (error) {
+		console.error(
+			`Exception happened inside the __sendEmailToSales(), Customer controller file.`
+		);
+		console.error(error);
+		result = false;
+	}
+	return result;
+};
+
+// I KNOW IT LOOKS BAD, PURE REPETITION. 
+// BUT TRUST ME, I KNOW THIS COMPANY.
+// THIS WILL SAVE A LOT OF WORKS FOR YOU IN THE FUTURE.
+const __sendContactMessage = async (rawData: I_ContactMessage ): Promise<boolean> => {
+	let result = false;
+	try {
+		let body = "";
+		for (const property in rawData) {
+			body += `${property}: ${rawData[property as keyof I_ContactMessage]}\n`;
+		}
+		// LOOK HERE FUTURE CODERS, THIS IS WHERE YOU CONFIGURE THE DESTINATION EMAIL
 		sendMailWithOptions(rawData.email, "New Customer Application", body)
 		.then((data) => {
 				result = true;
@@ -96,4 +140,5 @@ const __sendEmailToSales = async (rawData: I_Customer): Promise<boolean> => {
 
 export default {
 	customerProfileCreation,
+	customerContactMessage,
 };

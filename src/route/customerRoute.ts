@@ -10,11 +10,17 @@ const route = express.Router();
 
 route.post(
 	"/submittingCustomerProfile",
-    // // One day if the 
+    // // One day if the Peter wants validate Phone Number, Just uncomment this middle ware // //
 	// validateCustomerPhoneNumber,   
 	customerProfileValidationMiddleware,
 	customerProfileValidationErrorHandler,
 	customerController.customerProfileCreation
 );
+
+route.post(
+	"/customerContactMessage",
+	customerController.customerContactMessage
+)
+
 
 export { route as customerRoute };
