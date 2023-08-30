@@ -120,7 +120,7 @@ const __sendContactMessage = async (rawData: I_ContactMessage ): Promise<boolean
 			body += `${property}: ${rawData[property as keyof I_ContactMessage]}\n`;
 		}
 		// LOOK HERE FUTURE CODERS, THIS IS WHERE YOU CONFIGURE THE DESTINATION EMAIL
-		sendMailWithOptions(rawData.email, "New Customer Application", body)
+		sendMailWithOptions(rawData.email, "General Inquires", body)
 		.then((data) => {
 				result = true;
 			})
